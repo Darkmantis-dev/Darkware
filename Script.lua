@@ -8,7 +8,7 @@ if game.PlaceId == 155615604 then
     local TeleportsTab = Window:NewTab("Teleports")
     local Teleports = TeleportsTab:NewSection("Teleports")
     local TeamsTab = Window:NewTab("Teams")
-    local Teams = TeleportsTab:NewSection("Teams")
+    local Teams = TeamsTab:NewSection("Teams")
 
     
     MainSection:NewButton("Get Admin", "Gives you every gun in the game", function()
