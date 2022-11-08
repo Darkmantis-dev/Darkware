@@ -9,9 +9,11 @@ if game.PlaceId == 155615604 then
     local Teleports = TeleportsTab:NewSection("Teleports")
     local TeamsTab = Window:NewTab("Teams")
     local Teams = TeamsTab:NewSection("Teams")
+    local OthersTab = Window:NewTab("Other")
+    local Others = OthersTab:NewSection("Others")
 
     
-    MainSection:NewButton("Get Admin", "Gives you every gun in the game", function()
+    MainSection:NewButton("Get Admin | Septex", "Created By Septex", function()
         loadstring(game:HttpGet(('https://raw.githubusercontent.com/XTheMasterX/Scripts/Main/PrisonLife'),true))()
     end)
     MainSection:NewButton("Auto Aim at head", "Where ever you shoot it shoots at someones head", function()
@@ -71,6 +73,92 @@ if game.PlaceId == 155615604 then
             Duration = 20;
         })
     end)
+    MainSection:NewButton("Esp", "See People Through Walls", function()
+        local Settings = {
+            ['Material'] = Enum.Material.Neon, -- Material
+            ['Color'] = Color3.fromRGB(255,0,0), -- Color
+            ['Transparency'] = 0.7 -- 0 to 1 Transparency
+        }
+        
+        local ScreenGui = Instance.new('ScreenGui', game.CoreGui) -- Create screengui
+        ScreenGui.IgnoreGuiInset = true
+        
+        local ViewportFrame = Instance.new('ViewportFrame', ScreenGui) -- Create viewport and define properties
+        ViewportFrame.CurrentCamera = workspace.CurrentCamera
+        ViewportFrame.Size = UDim2.new(1,0,1,0)
+        ViewportFrame.BackgroundTransparency = 1
+        ViewportFrame.ImageTransparency = Settings.Transparency
+        
+        local Chasms = {} -- Array for storing parts
+        
+        function generateChasm(player) -- functions that generates chasms for the player specififed
+            local Character = workspace:FindFirstChild(player.Name)
+            
+            if Character then
+                for _,Part in pairs(Character:GetChildren()) do
+                    if Part:IsA('Part') or Part:IsA('MeshPart') then
+                        local Chasm = Part:Clone()
+                        
+                        for _,Child in pairs(Chasm:GetChildren()) do
+                            if Child:IsA('Decal') then
+                                Child:Destroy()
+                            end
+                        end
+                        
+                        Chasm.Parent = ViewportFrame
+                        Chasm.Material = Settings.Material
+                        Chasm.Color = Settings.Color
+                        Chasm.Anchored = true
+                        
+                        table.insert(Chasms, Chasm)
+                    end
+                end
+            end
+        end
+        
+        function clearChasms() -- remove all chasms
+            for _,Chasm in pairs(Chasms) do
+                Chasm:Destroy()
+            end
+            
+            Chasms = {}
+        end
+        
+        while game:GetService('RunService').RenderStepped:Wait() do -- loop this process
+            clearChasms()
+            
+            for _,Player in pairs(game:GetService('Players'):GetPlayers()) do
+                if Player ~= game:GetService('Players').LocalPlayer then
+                    generateChasm(Player)
+                end
+            end
+        end
+    end)
+    MainSection:NewButton("Ctrl + Click To TP", "Ctrl + Click To TP", function()
+        local Imput = game:GetService("UserInputService")
+        local Plr = game.Players.LocalPlayer
+        local Mouse = Plr:GetMouse()
+        
+        function To(position)
+           local Chr = Plr.Character
+           if Chr ~= nil then
+               Chr:MoveTo(position)
+           end
+        end
+        
+        Imput.InputBegan:Connect(function(input)
+           if input.UserInputType == Enum.UserInputType.MouseButton1 and Imput:IsKeyDown(Enum.KeyCode.LeftControl) then
+               To(Mouse.Hit.p)
+           end
+        end)
+    end)
+    MainSection:NewSlider("Set Walkspeed", "Sets walkspeed min 0 max 500", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+    end)
+    MainSection:NewSlider("Set JumpPower", "Sets Jumpower min 0 max 1000", 1000, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+    end)
+    --Teams
     Teams:NewButton("Switch to Cop", "Changes your team to police", function()
         local lastPos = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").position
         workspace.Remote.loadchar:InvokeServer("", "Bright blue")
@@ -109,5 +197,12 @@ if game.PlaceId == 155615604 then
     end)
     Teleports:NewButton("Teleport to the Armory", "Teleports you to the Armory", function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(798,99,2260)
+    end)
+    --Others
+    Others:NewButton("Server Hop", "Teleports you to a new server", function()
+        game:GetService("TeleportService"):Teleport(155615604, game:GetService("Players").LocalPlayer)
+    end)
+    Others:NewButton("Infinite Yeild", "Executes IY", function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     end)
 end
