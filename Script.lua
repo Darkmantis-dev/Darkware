@@ -152,6 +152,52 @@ if game.PlaceId == 155615604 then
            end
         end)
     end)
+    MainSection:NewButton("One Punch Kill", "Go Up to someone and press F", function()
+        mainRemotes = game.ReplicatedStorage
+        meleeRemote = mainRemotes['meleeEvent']
+        mouse = game.Players.LocalPlayer:GetMouse()
+        punching = false
+        cooldown = false
+        
+        function punch()
+        cooldown = true
+        local part = Instance.new("Part", game.Players.LocalPlayer.Character)
+        part.Transparency = 1
+        part.Size = Vector3.new(5, 2, 3)
+        part.CanCollide = false
+        local w1 = Instance.new("Weld", part)
+        w1.Part0 = game.Players.LocalPlayer.Character.Torso
+        w1.Part1 = part
+        w1.C1 = CFrame.new(0,0,2)
+        part.Touched:connect(function(hit)
+        if game.Players:FindFirstChild(hit.Parent.Name) then
+        local plr = game.Players:FindFirstChild(hit.Parent.Name)
+        if plr.Name ~= game.Players.LocalPlayer.Name then
+        part:Destroy()
+        
+        for i = 1,100 do
+        meleeRemote:FireServer(plr)
+        end
+        end
+        end
+        end)
+        
+        wait(1)
+        cooldown = false
+        part:Destroy()
+        end
+        
+        
+        mouse.KeyDown:connect(function(key)
+        if cooldown == false then
+        if key:lower() == "f" then
+        
+        punch()
+        
+        end
+        end
+        end)
+    end)
     MainSection:NewSlider("Set Walkspeed", "Sets walkspeed min 0 max 500", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
     end)
