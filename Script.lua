@@ -1,3 +1,4 @@
+--Start Of Prison Life
 if game.PlaceId == 155615604 then
     local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
     local Window = Library.CreateLib("Darkware | Prison Life", "Synapse")
@@ -5,6 +6,8 @@ if game.PlaceId == 155615604 then
     -- Prison Life script
     local Main = Window:NewTab("Main Scripts")
     local MainSection = Main:NewSection("Default Scripts")
+    local Tab = Window:NewTab("Local Player")
+    local Section = Tab:NewSection("Player Scripts")
     local TeleportsTab = Window:NewTab("Teleports")
     local Teleports = TeleportsTab:NewSection("Teleports")
     local TeamsTab = Window:NewTab("Teams")
@@ -12,11 +15,11 @@ if game.PlaceId == 155615604 then
     local OthersTab = Window:NewTab("Other")
     local Others = OthersTab:NewSection("Others")
 
-    
+  --Main Section  
     MainSection:NewButton("Get Admin | Septex", "Created By Septex", function()
         loadstring(game:HttpGet(('https://raw.githubusercontent.com/XTheMasterX/Scripts/Main/PrisonLife'),true))()
     end)
-    MainSection:NewButton("Auto Aim at head", "Where ever you shoot it shoots at someones head", function()
+    MainSection:NewButton("Aimbot At Head", "Where ever you shoot it shoots at someones head", function()
         local Players = game.Players
         local LocalPlayer = Players.LocalPlayer
         local GetPlayers = Players.GetPlayers
@@ -73,7 +76,60 @@ if game.PlaceId == 155615604 then
             Duration = 20;
         })
     end)
-    MainSection:NewButton("Esp", "See People Through Walls", function()
+    MainSection:NewButton("One Punch Kill", "Go Up to someone and press F", function()
+        mainRemotes = game.ReplicatedStorage
+        meleeRemote = mainRemotes['meleeEvent']
+        mouse = game.Players.LocalPlayer:GetMouse()
+        punching = false
+        cooldown = false
+        
+        function punch()
+        cooldown = true
+        local part = Instance.new("Part", game.Players.LocalPlayer.Character)
+        part.Transparency = 1
+        part.Size = Vector3.new(5, 2, 3)
+        part.CanCollide = false
+        local w1 = Instance.new("Weld", part)
+        w1.Part0 = game.Players.LocalPlayer.Character.Torso
+        w1.Part1 = part
+        w1.C1 = CFrame.new(0,0,2)
+        part.Touched:connect(function(hit)
+        if game.Players:FindFirstChild(hit.Parent.Name) then
+        local plr = game.Players:FindFirstChild(hit.Parent.Name)
+        if plr.Name ~= game.Players.LocalPlayer.Name then
+        part:Destroy()
+        
+        for i = 1,100 do
+        meleeRemote:FireServer(plr)
+        end
+        end
+        end
+        end)
+        
+        wait(1)
+        cooldown = false
+        part:Destroy()
+        end
+        
+        
+        mouse.KeyDown:connect(function(key)
+        if cooldown == false then
+        if key:lower() == "f" then
+        
+        punch()
+        
+        end
+        end
+        end)
+    end)
+    MainSection:NewButton("Anti Tazer", "Might Not work if killed", function()
+        game.Players.LocalPlayer.Character.ClientInputHandler.Disabled = true
+        game.Players.LocalPlayer.CharacterAdded:connect(function()
+        game.Workspace:WaitForChild(game.Players.LocalPlayer.Name)
+        game.Players.LocalPlayer.Character.ClientInputHandler.Disabled = true
+        end)
+    end)
+    MainSection:NewButton("ESP", "See People Through Walls", function()
         local Settings = {
             ['Material'] = Enum.Material.Neon, -- Material
             ['Color'] = Color3.fromRGB(255,0,0), -- Color
@@ -134,7 +190,34 @@ if game.PlaceId == 155615604 then
             end
         end
     end)
-    MainSection:NewButton("Ctrl + Click To TP", "Ctrl + Click To TP", function()
+    MainSection:NewButton("Remove All Doors", "Removes all doors in the game", function()
+        Workspace.Prison_Cellblock.doors:Destroy()
+			
+        for i,v in pairs(workspace:GetChildren())do
+                if v.Name == "Doors" then
+            v:Destroy()
+        end
+     end
+    end)
+    MainSection:NewButton("Arrest All", "Arrest every criminal", function()
+        wait(0.1)
+        Player = game.Players.LocalPlayer
+        Pcf = Player.Character.HumanoidRootPart.CFrame
+        for i,v in pairs(game.Teams.Criminals:GetPlayers()) do
+        if v.Name ~= Player.Name then
+        local i = 10
+        repeat
+        wait()
+        i = i-1
+        game.Workspace.Remote.arrest:InvokeServer(v.Character.HumanoidRootPart)
+        Player.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 1)
+        until i == 0
+        end
+      end
+    end)
+
+    --Local Player
+    Section:NewButton("Ctrl + Click To TP", "Ctrl + Click To TP", function()
         local Imput = game:GetService("UserInputService")
         local Plr = game.Players.LocalPlayer
         local Mouse = Plr:GetMouse()
@@ -152,56 +235,10 @@ if game.PlaceId == 155615604 then
            end
         end)
     end)
-    MainSection:NewButton("One Punch Kill", "Go Up to someone and press F", function()
-        mainRemotes = game.ReplicatedStorage
-        meleeRemote = mainRemotes['meleeEvent']
-        mouse = game.Players.LocalPlayer:GetMouse()
-        punching = false
-        cooldown = false
-        
-        function punch()
-        cooldown = true
-        local part = Instance.new("Part", game.Players.LocalPlayer.Character)
-        part.Transparency = 1
-        part.Size = Vector3.new(5, 2, 3)
-        part.CanCollide = false
-        local w1 = Instance.new("Weld", part)
-        w1.Part0 = game.Players.LocalPlayer.Character.Torso
-        w1.Part1 = part
-        w1.C1 = CFrame.new(0,0,2)
-        part.Touched:connect(function(hit)
-        if game.Players:FindFirstChild(hit.Parent.Name) then
-        local plr = game.Players:FindFirstChild(hit.Parent.Name)
-        if plr.Name ~= game.Players.LocalPlayer.Name then
-        part:Destroy()
-        
-        for i = 1,100 do
-        meleeRemote:FireServer(plr)
-        end
-        end
-        end
-        end)
-        
-        wait(1)
-        cooldown = false
-        part:Destroy()
-        end
-        
-        
-        mouse.KeyDown:connect(function(key)
-        if cooldown == false then
-        if key:lower() == "f" then
-        
-        punch()
-        
-        end
-        end
-        end)
-    end)
-    MainSection:NewSlider("Set Walkspeed", "Sets walkspeed min 0 max 500", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    Section:NewSlider("Set Walkspeed", "Sets walkspeed min 0 max 500", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
     end)
-    MainSection:NewSlider("Set JumpPower", "Sets Jumpower min 0 max 1000", 1000, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    Section:NewSlider("Set JumpPower", "Sets Jumpower min 0 max 1000", 1000, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
     end)
     --Teams
@@ -218,8 +255,8 @@ if game.PlaceId == 155615604 then
         Workspace.Remote.TeamEvent:FireServer("Medium stone grey")
     end)
     Teams:NewButton("Switch To Criminal", "Changes your team To Criminal", function()
-        local lastPos = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").position
         LCS = game.Workspace["Criminals Spawn"].SpawnLocation
+
         LCS.CanCollide = false
         LCS.Size = Vector3.new(51.05, 24.12, 54.76)
         LCS.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
@@ -228,8 +265,6 @@ if game.PlaceId == 155615604 then
         LCS.CFrame = CFrame.new(-920.510803, 92.2271957, 2138.27002, 0, 0, -1, 0, 1, 0, 1, 0, 0)
         LCS.Size = Vector3.new(6, 0.2, 6)
         LCS.Transparency = 0
-        wait()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(lastPos)
     end)
     --Teleports
     Teleports:NewButton("Teleport to Cafe", "Teleports you to the Cafe", function()
@@ -252,3 +287,4 @@ if game.PlaceId == 155615604 then
         loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     end)
 end
+--end of prison life
